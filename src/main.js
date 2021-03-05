@@ -13,6 +13,7 @@ import {Box} from '@material-ui/core';
 import Mapa from './components/Mapa';
 
 const App = () => {
+
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme()}>

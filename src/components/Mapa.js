@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {BaseMapPicker, Map} from 'geocomponents';
 import {connect} from 'react-redux';
@@ -19,6 +19,17 @@ const mapStyles = [
 
 const Mapa = ({viewport, onViewportChange}) => {
   const [selectedStyleUrl, setSelectedStyleUrl] = useState(mapStyles[0].url);
+  const [map, setMap] = useState();
+
+  useEffect(() => {
+    if(map) {
+      const bounds = map.getBounds();
+      console.log(bounds);
+      // TODO debounce
+      const url = `https://analisi.transparenciacatalunya.cat/resource/j6ii-t3w2.json?$where=within_box(georeferencia, ${bounds.getNorth()}, ${bounds.getWest()}, ${bounds.getSouth()}, ${bounds.getEast()})`
+      console.log(url);
+    }
+  }, [viewport, map]);
 
   const handleViewportChange = ({width, height, latitude, longitude, zoom, bearing, pitch}) =>
     onViewportChange({
@@ -32,10 +43,11 @@ const Mapa = ({viewport, onViewportChange}) => {
     top: 0
   }}>
     <Map
+      onMapSet={setMap}
       mapStyle={selectedStyleUrl}
       viewport={viewport}
       onViewportChange={handleViewportChange}
-      hash={true}
+      hash={false}
     />
     <BaseMapPicker
       selectedStyleUrl={selectedStyleUrl}
